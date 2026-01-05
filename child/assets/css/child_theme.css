@@ -1,0 +1,494 @@
+/* Cartoon Child Theme - Light Orange Video Style */
+
+@import url('https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap');
+
+:root {
+    --primary-color: #FF9800; /* Warm Orange */
+    --secondary-color: #FF5722; /* Deep Orange */
+    --accent-color: #FFC107; /* Amber */
+    --danger-color: #E64A19;
+    --text-color: #5D4037; /* Warm Brown Text */
+    --white: #fff;
+    --header-bg: transparent; /* Transparent Header */
+    --card-bg: #FFFFFF;
+}
+
+body {
+    font-family: 'Nunito', sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+    color: var(--text-color);
+}
+
+/* Video Background */
+.video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.video-background video {
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+}
+
+.video-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 243, 224, 0.2); /* Warm light orange tint */
+}
+
+/* Header - Transparent */
+.child-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 10;
+    border-bottom: none;
+}
+
+.logo-text {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.2rem;
+    color: #E65100;
+    text-shadow: 3px 3px 0px #fff, 5px 5px 10px rgba(0,0,0,0.1);
+}
+
+.logo-text span {
+    color: #FFB300;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: rgba(255, 255, 255, 0.9); /* Keep readable */
+    padding: 8px 25px;
+    border-radius: 50px;
+    border: 2px solid #FFCC80;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.logout-btn {
+    background: #FF5722;
+    color: white;
+    padding: 8px 20px;
+    border-radius: 20px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 4px 0 #BF360C;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logout-btn:active {
+    box-shadow: 0 0 0 #BF360C;
+    transform: translateY(4px);
+}
+
+/* Main Container */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Glass Panel for Inner Pages */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 30px;
+    padding: 30px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border: 4px solid #fff;
+    margin-bottom: 30px;
+}
+
+.welcome-banner {
+    background: linear-gradient(135deg, #7986CB, #3F51B5);
+    color: white;
+    display: inline-block;
+    padding: 12px 50px;
+    border-radius: 50px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    box-shadow: 0 8px 20px rgba(63, 81, 181, 0.3);
+    margin-bottom: 50px;
+    border: 4px solid #fff;
+    position: relative;
+}
+
+.welcome-banner::before, .welcome-banner::after {
+    content: '★';
+    position: absolute;
+    color: #FFEB3B;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+}
+.welcome-banner::before { left: 20px; }
+.welcome-banner::after { right: 20px; }
+
+/* Main Big Buttons Row - 3D Cartoon Style */
+.activity-row {
+    display: flex;
+    justify-content: center;
+    gap: 25px;
+    flex-wrap: wrap;
+    margin-bottom: 60px;
+}
+
+.big-btn {
+    width: 220px;
+    height: 160px; /* Slightly shorter for button look */
+    border-radius: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    color: white;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.5rem;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+    border: none;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.1s;
+}
+
+/* Top Shine Effect */
+.big-btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: linear-gradient(to bottom, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0) 100%);
+    border-radius: 25px 25px 100% 100% / 25px 25px 10% 10%;
+    pointer-events: none;
+}
+
+.big-btn:active {
+    transform: translateY(6px);
+}
+
+.big-btn i {
+    font-size: 4rem;
+    margin-bottom: 10px;
+    filter: drop-shadow(2px 2px 0 rgba(0,0,0,0.2));
+    position: relative;
+    z-index: 2;
+}
+
+.big-btn span {
+    position: relative;
+    z-index: 2;
+}
+
+/* Updated Colors with Solid 3D Shadows */
+.btn-learn { 
+    background: #4CAF50; 
+    box-shadow: 0 8px 0 #2E7D32, 0 15px 20px rgba(0,0,0,0.2);
+}
+.btn-learn:active { box-shadow: 0 2px 0 #2E7D32, 0 5px 10px rgba(0,0,0,0.2); }
+
+.btn-games { 
+    background: #9C27B0; 
+    box-shadow: 0 8px 0 #6A1B9A, 0 15px 20px rgba(0,0,0,0.2);
+}
+.btn-games:active { box-shadow: 0 2px 0 #6A1B9A, 0 5px 10px rgba(0,0,0,0.2); }
+
+.btn-quiz { 
+    background: #FF9800; 
+    box-shadow: 0 8px 0 #E65100, 0 15px 20px rgba(0,0,0,0.2);
+}
+.btn-quiz:active { box-shadow: 0 2px 0 #E65100, 0 5px 10px rgba(0,0,0,0.2); }
+
+.btn-draw { 
+    background: #E91E63; 
+    box-shadow: 0 8px 0 #880E4F, 0 15px 20px rgba(0,0,0,0.2);
+}
+.btn-draw:active { box-shadow: 0 2px 0 #880E4F, 0 5px 10px rgba(0,0,0,0.2); }
+
+
+/* Subject Cards Row - Glass/Capsule Style */
+.subject-row {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    margin-bottom: 50px;
+}
+
+.subject-card {
+    background: rgba(255, 255, 255, 0.95);
+    width: 300px;
+    padding: 15px 25px;
+    border-radius: 50px; /* Capsule shape */
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    text-decoration: none;
+    color: #5D4037;
+    border: 3px solid #fff;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.subject-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 30px rgba(255, 152, 0, 0.3);
+    background: #fff;
+}
+
+.subject-icon {
+    width: 55px;
+    height: 55px;
+    background: #E3F2FD;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    color: #2196F3;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+.subject-info h3 {
+    margin: 0;
+    font-family: 'Fredoka One', cursive;
+    color: #5D4037;
+    font-size: 1.4rem;
+}
+
+.subject-info p {
+    margin: 2px 0 0;
+    font-size: 0.85rem;
+    color: #8D6E63;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Footer Progress */
+.dashboard-footer {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 15px 40px;
+    border-radius: 50px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 -5px 20px rgba(0,0,0,0.1);
+    position: fixed;
+    bottom: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 1000px;
+    border: 4px solid #fff;
+    z-index: 100;
+}
+
+.stat-item {
+    font-weight: bold;
+    color: #E65100;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.progress-container {
+    flex-grow: 1;
+    margin: 0 25px;
+    background: #E0E0E0;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #66BB6A, #43A047);
+    width: 0%; /* Dynamic */
+    transition: width 1s ease-in-out;
+    border-radius: 10px;
+    box-shadow: 0 2px 0 rgba(255,255,255,0.3) inset;
+}
+
+/* Back Button Style */
+.btn-back {
+    display: inline-block;
+    background: #FF5722;
+    color: white;
+    padding: 10px 25px;
+    border-radius: 30px;
+    text-decoration: none;
+    font-weight: bold;
+    box-shadow: 0 4px 0 #D84315;
+    margin-bottom: 20px;
+    transition: all 0.2s;
+}
+
+.btn-back:active {
+    transform: translateY(4px);
+    box-shadow: 0 0 0 #D84315;
+}
+
+/* =========================================
+   Responsive Media Queries
+   ========================================= */
+
+/* Tablet & Smaller Desktops */
+@media (max-width: 1024px) {
+    .dashboard-container {
+        padding: 15px;
+    }
+    
+    .big-btn {
+        width: 180px;
+        height: 140px;
+        font-size: 1.3rem;
+    }
+    
+    .subject-card {
+        width: 280px;
+    }
+}
+
+/* Mobile Devices */
+@media (max-width: 768px) {
+    /* Header Stack */
+    .child-header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+        text-align: center;
+    }
+
+    .user-info {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    /* Stack Activity Buttons */
+    .activity-row {
+        gap: 15px;
+    }
+
+    .big-btn {
+        width: 140px; /* Two per row usually fits */
+        height: 120px;
+        font-size: 1.1rem;
+    }
+    
+    .big-btn i {
+        font-size: 2.5rem;
+    }
+
+    /* Cards Stack */
+    .subject-row {
+        gap: 15px;
+    }
+    
+    .subject-card {
+        width: 100%; /* Full width cards on mobile */
+        max-width: 350px;
+    }
+
+    /* Lesson View Split Layout Fix */
+    /* This targets the inline flex style in lesson_view.php */
+    .lesson-split-container {
+        flex-direction: column !important;
+    }
+    
+    .lesson-video-col, .lesson-content-col {
+        width: 100% !important;
+        flex: none !important;
+        border-left: none !important;
+        border-top: 1px solid #eee;
+    }
+
+    /* Footer Fix */
+    .dashboard-footer {
+        flex-direction: column;
+        gap: 15px;
+        position: relative;
+        bottom: 0;
+        transform: none;
+        left: 0;
+        width: 100%;
+        max-width: 100%;
+        margin-top: 40px;
+        border-radius: 20px;
+        padding: 20px;
+    }
+    
+    .progress-container {
+        width: 100%;
+        margin: 10px 0;
+    }
+    
+    /* Text Sizes */
+    h1 { font-size: 2rem !important; }
+    h2 { font-size: 1.5rem !important; }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .logo-text {
+        font-size: 1.8rem;
+    }
+    
+    /* Stack Buttons Single Column */
+    .big-btn {
+        width: 100%; 
+        max-width: 280px;
+        flex-direction: row; /* Horizontal layout for single column buttons */
+        height: 80px;
+        gap: 20px;
+        padding: 0 30px;
+        justify-content: flex-start;
+    }
+    
+    .big-btn i {
+        margin-bottom: 0;
+        font-size: 2rem;
+    }
+    
+    .welcome-banner {
+        padding: 10px 30px;
+        font-size: 1.2rem;
+        width: 100%;
+        box-sizing: border-box;
+    }
+}

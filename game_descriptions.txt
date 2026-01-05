@@ -1,0 +1,96 @@
+GAME DESCRIPTIONS & VISUAL GUIDES
+=================================
+
+1. MATH HERO (RPG Battle)
+-------------------------
+Objective: Defeat monsters by solving math problems.
+Visual Style:
+- Setting: A vibrant battle arena with a gradient blue sky, fluffy white clouds, mountains in the distance, and a grassy field in the foreground.
+- Hero: A superhero character on the left wearing a blue suit, red cape, and yellow lightning emblem. He has an idle breathing animation.
+- Enemy: Randomly spawns on the right. Can be a green Slime, a brown Bat, or a green Goblin with a club.
+- UI: A semi-transparent "glass" panel at the top displays the math question (e.g., "4 + 3 = ?").
+- Health Bars: Green (Hero) and Red (Enemy) bars float above the characters.
+
+How to Play:
+1. Look at the math problem at the top of the screen.
+2. Three answer buttons appear at the bottom. Click the correct one.
+3. Correct Answer: The Hero dashes across the screen and punches the enemy, dealing damage.
+4. Wrong Answer: The Enemy attacks the Hero, reducing your health.
+5. Win by reducing the Enemy's health to zero!
+
+Winning Condition: 
+- Defeat the enemy to see a "Victory! 🏆" message and level up.
+
+
+2. ALPHABET GAME (Bubble Sort)
+------------------------------
+Objective: Find the specific letter requested and put it in the toy basket.
+Visual Style:
+- Setting: A clean, bright background (white/cream).
+- Objects: Colorful floating bubbles (Red, Teal, Yellow, Orange, Green) containing large white letters. They bob gently up and down.
+- Target: A rectangular "Toy Basket" box at the bottom with a dashed orange border. It has a label like "Drag 'A' here!".
+
+How to Play:
+1. Read the instruction on the basket (e.g., "Drag 'A' here!").
+2. Look for the floating bubble that contains that letter.
+3. Click/Touch and drag the correct bubble into the basket.
+4. If correct, the bubble pops with confetti!
+
+Winning Condition:
+- Successfully dragging the correct letter triggers a "Correct! 🎉" message and spawns new letters.
+
+
+3. NUMBER JUMP (Infinite Runner)
+--------------------------------
+Objective: Guide the frog to jump only on the specific target numbered lily pad.
+Visual Style:
+- Setting: A side-scrolling view of a pond with a blue sky background.
+- Character: A cute green frog with big eyes. It sits on lily pads and stretches its legs when jumping.
+- Platforms: Green oval lily pads floating on the water. Each pad has a number (1-10) written on it.
+- UI: A large instruction box at the top says "Jump on number: [X]".
+
+How to Play:
+1. The game tells you a target number (e.g., "Jump on number: 5").
+2. Tap/Click on any visible lily pad that has that number.
+3. The frog will leap in an arc to land on it.
+4. The screen scrolls forward, revealing new pads.
+
+Winning Condition:
+- Keep jumping on the correct numbers to build a high score. Jumping on the wrong number warns you to "Try Again".
+
+
+4. SHAPE BUILDER (Puzzle Match)
+-------------------------------
+Objective: Fit the shapes into their matching holes on the board.
+Visual Style:
+- Setting: Looks like a wooden table or floor.
+- Board: A wooden puzzle board with indented "shadow" slots for shapes.
+- Shapes: 3D-style colorful blocks (Square, Circle, Triangle, Star, Hexagon). Each shape has a cute smiley face 🙂.
+- Feedback: Shapes snap into place with a visual "pop" and confetti.
+
+How to Play:
+1. Look at the empty slots on the puzzle board.
+2. Find the matching colored shape scattered around the table.
+3. Drag the shape into its corresponding hole.
+4. It will snap into place if it fits.
+
+Winning Condition:
+- Match all 3 shapes to clear the board and see "All Matched! 🎉". A new set of shapes will appear.
+
+
+5. MEMORY FLIP (Card Match)
+---------------------------
+Objective: Find matching pairs of fruit cards.
+Visual Style:
+- Setting: Simple grid layout.
+- Cards: Teal-colored cards with a white "?" mark when face down.
+- Face Up: White cards showing fruit icons (Apple 🍎, Banana 🍌, Grapes 🍇, Cherry 🍒).
+
+How to Play:
+1. Click a card to flip it over and reveal the fruit.
+2. Click a second card to try and find the matching fruit.
+3. Match: Cards stay face up.
+4. No Match: Cards flip back over after 1 second.
+
+Winning Condition:
+- Find all matching pairs to display "You won! 🧠" and restart the game.
