@@ -22,11 +22,25 @@ if ($child_id) {
     foreach($children as $c) { if($c['child_id'] == $child_id) $valid = true; }
     if(!$valid) die("Unauthorized");
 
-    $lCount = $pdo->query("SELECT COUNT(*) FROM lesson_progress WHERE child_id = $child_id AND is_completed = 1")->fetchColumn();
-    $qCount = $pdo->query("SELECT COUNT(*) FROM quiz_results WHERE child_id = $child_id AND is_completed = 1")->fetchColumn();
-    $gCount = $pdo->query("SELECT COUNT(*) FROM game_progress WHERE child_id = $child_id")->fetchColumn();
-    $totalStars = $pdo->query("SELECT total_stars FROM children WHERE child_id = $child_id")->fetchColumn();
-    $level = $pdo->query("SELECT level FROM children WHERE child_id = $child_id")->fetchColumn();
+    // Use prepared statements for security
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM lesson_progress WHERE child_id = ? AND is_completed = 1");
+    $stmt->execute([$child_id]);
+    $lCount = $stmt->fetchColumn();
+
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM quiz_results WHERE child_id = ? AND is_completed = 1");
+    $stmt->execute([$child_id]);
+    $qCount = $stmt->fetchColumn();
+
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM game_progress WHERE child_id = ?");
+    $stmt->execute([$child_id]);
+    $gCount = $stmt->fetchColumn();
+
+    $stmt = $pdo->prepare("SELECT total_stars, level FROM children WHERE child_id = ?");
+    $stmt->execute([$child_id]);
+    $childStats = $stmt->fetch();
+    
+    $totalStars = $childStats['total_stars'] ?? 0;
+    $level = $childStats['level'] ?? 1;
 }
 
 include 'includes/header.php';

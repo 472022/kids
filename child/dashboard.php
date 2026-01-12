@@ -29,96 +29,203 @@ $subjects = $stmt->fetchAll();
 require_once 'includes/header.php';
 ?>
 
-        <!-- Welcome Banner -->
-        <div class="welcome-banner">
-            Learn • Play • Explore • Have Fun!
+        <!-- Hero Section -->
+        <div class="hero-banner">
+            <div class="hero-content">
+                <h1>Hello, <?php echo htmlspecialchars($child_name_header ?? 'Explorer'); ?>! 👋</h1>
+                <p>Ready for a new adventure today?</p>
+            </div>
+            <div class="hero-stats">
+                <div class="stat-bubble stars">
+                    <i class="fas fa-star"></i>
+                    <span><?php echo htmlspecialchars($child['total_stars'] ?? 0); ?></span>
+                </div>
+                <div class="stat-bubble trophies">
+                    <i class="fas fa-trophy"></i>
+                    <span><?php echo $completed_quizzes; ?></span>
+                </div>
+            </div>
         </div>
 
-        <!-- Big Activity Buttons -->
-        <div class="activity-row">
-            <a href="lessons.php" class="big-btn btn-learn">
-                <i class="fas fa-book-open"></i>
-                Learn
+        <!-- Main Activity Grid -->
+        <div class="activity-grid">
+            <a href="lessons.php" class="activity-card learn">
+                <div class="card-icon"><i class="fas fa-book-reader"></i></div>
+                <div class="card-text">
+                    <h3>Learn</h3>
+                    <p>Read & Watch</p>
+                </div>
             </a>
-            <a href="games.php" class="big-btn btn-games">
-                <i class="fas fa-gamepad"></i>
-                Play Games
+            <a href="games.php" class="activity-card play">
+                <div class="card-icon"><i class="fas fa-gamepad"></i></div>
+                <div class="card-text">
+                    <h3>Games</h3>
+                    <p>Play & Fun</p>
+                </div>
             </a>
-            <a href="quizzes.php" class="big-btn btn-quiz">
-                <i class="fas fa-question-circle"></i>
-                Take Quiz
+            <a href="quizzes.php" class="activity-card quiz">
+                <div class="card-icon"><i class="fas fa-brain"></i></div>
+                <div class="card-text">
+                    <h3>Quiz</h3>
+                    <p>Test Yourself</p>
+                </div>
             </a>
-            <a href="drawing.php" class="big-btn btn-draw">
-                <i class="fas fa-palette"></i>
-                Draw & Color
+            <a href="drawing.php" class="activity-card draw">
+                <div class="card-icon"><i class="fas fa-palette"></i></div>
+                <div class="card-text">
+                    <h3>Draw</h3>
+                    <p>Be Creative</p>
+                </div>
             </a>
         </div>
 
-        <!-- Start Learning (Subjects) -->
-        <div style="margin-bottom: 20px;">
-            <span class="welcome-banner" style="background: #4CAF50; font-size: 1.2rem;">Start Learning!</span>
+        <!-- Jump Back In (Subjects) -->
+        <div class="section-title">
+            <h2><i class="fas fa-rocket"></i> Jump Back In</h2>
+            <a href="lessons.php" class="view-all">View All</a>
         </div>
 
-        <div class="subject-row">
-            <!-- Dynamic Subjects or Fallback -->
+        <div class="mini-subject-grid">
             <?php if ($subjects): ?>
                 <?php foreach ($subjects as $subject): ?>
-                <a href="lessons.php?subject_id=<?php echo $subject['subject_id']; ?>" class="subject-card">
-                    <div class="subject-icon">
-                        <?php if(strpos(strtolower($subject['subject_name']), 'math') !== false): ?>
-                            <i class="fas fa-calculator"></i>
-                        <?php elseif(strpos(strtolower($subject['subject_name']), 'sci') !== false): ?>
-                            <i class="fas fa-flask"></i>
-                        <?php elseif(strpos(strtolower($subject['subject_name']), 'eng') !== false): ?>
-                            <i class="fas fa-font"></i>
-                        <?php else: ?>
-                            <i class="fas fa-book"></i>
-                        <?php endif; ?>
+                <?php 
+                    // Determine color/icon
+                    $colors = ['#FF9800', '#4CAF50', '#2196F3', '#9C27B0'];
+                    $bg_color = $colors[$subject['subject_id'] % count($colors)];
+                    $icon = 'fa-book';
+                    if(strpos(strtolower($subject['subject_name']), 'math') !== false) $icon = 'fa-calculator';
+                    if(strpos(strtolower($subject['subject_name']), 'sci') !== false) $icon = 'fa-flask';
+                    if(strpos(strtolower($subject['subject_name']), 'eng') !== false) $icon = 'fa-font';
+                ?>
+                <a href="lessons.php?subject_id=<?php echo $subject['subject_id']; ?>" class="mini-subject-card">
+                    <div class="icon-box" style="background: <?php echo $bg_color; ?>;">
+                        <i class="fas <?php echo $icon; ?>"></i>
                     </div>
-                    <div class="subject-info">
-                        <h3><?php echo htmlspecialchars($subject['subject_name']); ?></h3>
-                        <p>Click to start!</p>
-                    </div>
+                    <span><?php echo htmlspecialchars($subject['subject_name']); ?></span>
                 </a>
                 <?php endforeach; ?>
             <?php else: ?>
-                <!-- Static Fallback if no subjects -->
-                <a href="lessons.php" class="subject-card">
-                    <div class="subject-icon"><i class="fas fa-font"></i></div>
-                    <div class="subject-info"><h3>English</h3><p>ABC & Grammar</p></div>
-                </a>
-                <a href="lessons.php" class="subject-card">
-                    <div class="subject-icon"><i class="fas fa-calculator"></i></div>
-                    <div class="subject-info"><h3>Maths</h3><p>123 & Counting</p></div>
-                </a>
-                <a href="lessons.php" class="subject-card">
-                    <div class="subject-icon"><i class="fas fa-flask"></i></div>
-                    <div class="subject-info"><h3>Science</h3><p>World & Nature</p></div>
-                </a>
+                <p style="grid-column: 1/-1; text-align: center; color: #90A4AE;">No subjects found.</p>
             <?php endif; ?>
         </div>
 
     </div> <!-- End Dashboard Container -->
 
-    <!-- Footer Progress Bar - Clickable Link to Profile -->
-    <a href="progress.php" class="dashboard-footer" style="text-decoration: none; color: inherit; cursor: pointer; transition: transform 0.2s;">
-        <div class="stat-item">
-            Quizzes: <?php echo $completed_quizzes; ?> / 10
-        </div>
-        <div class="stat-item" style="color: #FBC02D;">
-            Stars Earned: <?php echo htmlspecialchars($child['total_stars'] ?? 0); ?> <i class="fas fa-star"></i>
-        </div>
-        <div style="display: flex; align-items: center; flex-grow: 1; margin-left: 20px;">
-            <span class="stat-item" style="font-size: 0.9rem; margin-right: 10px;">Your Progress</span>
-            <div class="progress-container">
-                <div class="progress-bar-fill" style="width: <?php echo min(($child['total_stars'] ?? 0), 100); ?>%;"></div>
-            </div>
-        </div>
-    </a>
     <style>
-        .dashboard-footer:hover {
-            transform: translateX(-50%) scale(1.02);
-            box-shadow: 0 -8px 25px rgba(0,0,0,0.15);
+        /* Hero Banner */
+        .hero-banner {
+            background: linear-gradient(135deg, #FF9800, #F57C00);
+            border-radius: 25px;
+            padding: 30px 40px;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            box-shadow: 0 10px 20px rgba(245, 124, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        .hero-banner::after {
+            content: ''; position: absolute; top: -50%; right: -10%; width: 300px; height: 300px;
+            background: rgba(255,255,255,0.1); border-radius: 50%;
+        }
+        .hero-content h1 { font-family: 'Fredoka One'; font-size: 2.5rem; margin: 0 0 5px 0; }
+        .hero-content p { font-size: 1.2rem; margin: 0; opacity: 0.9; }
+        
+        .hero-stats { display: flex; gap: 15px; }
+        .stat-bubble {
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 50px;
+            display: flex; align-items: center; gap: 10px;
+            font-weight: bold; font-size: 1.2rem;
+            backdrop-filter: blur(5px);
+        }
+        .stat-bubble i { color: #FFD700; }
+
+        /* Activity Grid */
+        .activity-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .activity-card {
+            border-radius: 25px;
+            padding: 25px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            aspect-ratio: 1/1;
+            position: relative;
+            overflow: hidden;
+        }
+        .activity-card:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        
+        /* Decorative Background Circles */
+        .activity-card::before {
+            content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px;
+            background: rgba(255,255,255,0.15); border-radius: 50%;
+        }
+        .activity-card::after {
+            content: ''; position: absolute; bottom: -20px; left: -20px; width: 80px; height: 80px;
+            background: rgba(255,255,255,0.1); border-radius: 50%;
+        }
+
+        .card-icon {
+            font-size: 3rem; margin-bottom: 15px;
+            width: 80px; height: 80px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(255,255,255,0.25);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: float 4s ease-in-out infinite;
+        }
+        
+        /* Specific Card Styles */
+        .learn { background: linear-gradient(135deg, #4FC3F7, #2196F3); }
+        .learn .card-icon { color: white; }
+        
+        .play { background: linear-gradient(135deg, #AED581, #7CB342); }
+        .play .card-icon { color: white; animation-delay: 1s; }
+        
+        .quiz { background: linear-gradient(135deg, #FFB74D, #FB8C00); }
+        .quiz .card-icon { color: white; animation-delay: 2s; }
+        
+        .draw { background: linear-gradient(135deg, #BA68C8, #8E24AA); }
+        .draw .card-icon { color: white; animation-delay: 3s; }
+        
+        .card-text h3 { margin: 0; font-family: 'Fredoka One'; font-size: 1.5rem; text-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .card-text p { margin: 5px 0 0; font-size: 1rem; color: rgba(255,255,255,0.9); font-weight: bold; }
+
+        /* Mini Subject Grid */
+        .section-title { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .section-title h2 { font-family: 'Fredoka One'; color: #37474F; margin: 0; font-size: 1.5rem; }
+        .view-all { color: #90A4AE; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+        
+        .mini-subject-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 15px; }
+        .mini-subject-card {
+            background: white; border-radius: 15px; padding: 15px;
+            display: flex; align-items: center; gap: 15px;
+            text-decoration: none; color: #37474F; font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .mini-subject-card:hover { transform: translateX(5px); }
+        .icon-box {
+            width: 40px; height: 40px; border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 1.2rem;
         }
     </style>
 

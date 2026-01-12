@@ -1,0 +1,452 @@
+Kids Learning Platform - Project Task Document
+===========================================
+
+1. Project Overview
+-------------------
+- The Kids Learning Platform is a child-friendly learning management system built with PHP and MySQL.
+- It combines **lessons, quizzes, games, drawing tools, and rewards** to make learning engaging for children.
+- The system is designed for three primary roles:
+  - **Admin**: Manages educational content (subjects, lessons, quizzes, games) and monitors global activity.
+  - **Parent**: Monitors a child’s learning progress, quiz scores, game activity, and overall engagement.
+  - **Child**: Consumes lessons, plays games, takes quizzes, draws, and earns stars and badges.
+
+High-Level Modules:
+- **Public Site**: Home page, registration, login, contact page.
+- **Admin Portal**: Content management, statistics, and activity overview.
+- **Parent Portal**: Progress dashboards and detailed reports per child.
+- **Child Portal**: Learning dashboard, lessons, games, quizzes, drawing board, achievements, and progress.
+
+
+2. Project Scope and Objectives
+-------------------------------
+Primary Objectives:
+- Provide an online environment where children can **learn, play, and track their progress**.
+- Enable parents to **monitor learning outcomes** through clear reports and timelines.
+- Allow admins to **configure and manage** all educational content without editing code.
+- Implement a **reward system** (stars, levels, badges) to incentivize learning.
+
+In-Scope Features:
+- Role-based authentication for Admin, Parent, and Child.
+- Registration flow that creates a parent and their child in one step.
+- Subject and lesson management with support for YouTube video lessons.
+- Quiz management, including questions and automatic scoring.
+- Game integration via HTML5 canvas/JavaScript games and persistent progress tracking.
+- Drawing board with the ability to save and view past drawings.
+- Progress dashboards for both child and parent views.
+- Badge and level system based on lessons, quizzes, games, and stars.
+
+Out-of-Scope (Current Version):
+- Multi-language support.
+- Advanced access control (per-subject permissions, classes, or multiple children per parent beyond simple linking).
+- Real-time communication or live classes.
+
+
+3. System Architecture and Technology Stack
+-------------------------------------------
+3.1 Technology Stack
+- **Backend**: PHP (procedural style, using PDO for database operations).
+- **Database**: MySQL/MariaDB (`kids_learning` database).
+- **Web Server**: Apache (typical XAMPP setup).
+- **Frontend**:
+  - HTML5, CSS3, Bootstrap-based template.
+  - JavaScript with jQuery and custom scripts.
+  - Chart.js for graphs (used in admin and parent analytics).
+  - Canvas-based drawing and games using custom JS.
+
+3.2 Directory Structure (Key Folders)
+- `/admin` – Admin dashboard and content management scripts.
+- `/child` – Child-facing dashboard, lessons, quizzes, games, drawing.
+- `/parent` – Parent dashboard and reporting views.
+- `/config` – Database configuration (`db.php`).
+- `/assets` – Shared CSS, JS, fonts, and images.
+- `/child/assets/js/games` – Individual game logic scripts (e.g., `alphabet.js`, `number_jump.js`).
+
+3.3 Database Schema (Core Tables)
+- **users / roles** are implicit via separate tables:
+  - `admins(admin_id, admin_name, admin_email, admin_password, created_at)`
+  - `parents(parent_id, parent_name, parent_email, parent_phone, parent_password, created_at)`
+  - `children(child_id, parent_id, child_name, child_age, child_password, avatar, level, total_stars, created_at)`
+- **Subjects & Lessons**:
+  - `subjects(subject_id, subject_name, subject_icon, created_at)`
+  - `lessons(lesson_id, subject_id, lesson_title, lesson_description, video_url, created_at)`
+  - `lesson_progress(progress_id, child_id, lesson_id, is_completed, completed_at)`
+- **Quizzes**:
+  - `quizzes(quiz_id, subject_id, quiz_title, created_at)`
+  - `quiz_questions(question_id, quiz_id, question, option_a, option_b, option_c, option_d, correct_option)`
+  - `quiz_results(result_id, child_id, quiz_id, score, is_completed, attempted_at)`
+- **Games**:
+  - `games(game_id, game_name, game_type, description, learning_outcome, created_at, notes)`
+  - `game_progress(game_progress_id, child_id, game_id, score, stars_earned, level_completed, last_played)`
+- **Achievements & Activity**:
+  - `achievements(achievement_id, title, description, badge_icon, created_at)`
+  - `child_achievements(id, child_id, achievement_id, earned_at)`
+  - `activity_logs(log_id, child_id, activity_type, activity_details, created_at)`
+- **Drawings**:
+  - `drawings(drawing_id, child_id, drawing_image, created_at)`
+
+3.4 Relationships (Conceptual)
+- One **parent** can have one or more **children** (`children.parent_id` → `parents.parent_id`).
+- A **subject** has many **lessons** and **quizzes`.
+- A **lesson** can be completed by many **children** (`lesson_progress`).
+- A **quiz** has many **quiz_questions` and many **quiz_results` (one per child attempt).
+- A **game** has many **game_progress` records (one per child and progressing over time).
+- An **achievement** can be earned by many children via `child_achievements`.
+- `activity_logs` record timeline events for a child: lessons, quizzes, games, drawings, etc.
+
+
+4. Authentication, Authorization, and Roles
+-------------------------------------------
+4.1 Authentication Flow
+- **Login (`login.php`)**:
+  - Accepts a `role` selection: `child`, `parent`, or `admin`.
+  - For **parent**: looks up by `parent_email` in `parents`.
+  - For **admin**: looks up by `admin_email` in `admins`.
+  - For **child**: looks up by `child_name` in `children`.
+  - Compares the submitted password with the stored password (currently plain-text comparison).
+  - On success, sets session variables: `$_SESSION['user_id']`, `$_SESSION['role']`, `$_SESSION['name']`, then redirects to the appropriate dashboard.
+
+- **Registration (`register.php`)**:
+  - Collects parent name, email, phone, password and child name, age, password.
+  - Uses a database transaction to:
+    - Check if parent email already exists.
+    - Insert the parent into `parents`.
+    - Insert the child into `children` linked via `parent_id`.
+  - On success, displays a success message linking to login.
+
+Note: The README mentions hashed passwords, but the current implementation stores and compares plain text passwords. New work should treat this as a **technical debt item** to address.
+
+4.2 Role-Based Access Control
+- Implemented via simple `auth_check.php` scripts in each portal:
+  - `/admin/includes/auth_check.php` ensures logged-in user has `role = 'admin'`.
+  - `/parent/includes/auth_check.php` ensures `role = 'parent'`.
+  - `/child/includes/auth_check.php` ensures `role = 'child'`.
+- Unauthorized access results in redirect to login or home.
+
+4.3 Session Model
+- Sessions store the minimal identity:
+  - `user_id` (ID from `admins`, `parents`, or `children` depending on role).
+  - `role` (string: `admin`, `parent`, `child`).
+  - `name` (e.g., admin_name, parent_name, or child_name).
+
+
+5. Feature Breakdown by Module
+------------------------------
+5.1 Public Site
+- **Home (`index.php`)**:
+  - Marketing-style landing page describing features.
+  - Shows login/register buttons or dashboard/logout links if already logged in.
+- **Register (`register.php`)**:
+  - Combined parent + child registration form.
+  - Client-side validation (password length, phone format, parent name characters).
+- **Login (`login.php`)**:
+  - Role selector and role-specific identity field (child: name; parent/admin: email).
+  - Handles authentication and redirects to the appropriate dashboard.
+
+5.2 Admin Portal (`/admin`)
+- **Dashboard (`dashboard.php`)**:
+  - Shows counts of parents, children, lessons, games, and quizzes.
+  - Displays recent activity logs (last few entries from `activity_logs`).
+  - Uses Chart.js for simple visualizations (user growth, content distribution).
+
+- **Subjects Management (`subjects_list.php`, `subject_add.php`, `subject_edit.php`, `subject_delete.php`)**:
+  - CRUD operations on `subjects` table.
+  - Allows specifying a subject icon, displayed on child and parent UIs.
+
+- **Lessons Management (`lessons_list.php`, `lesson_add.php`, `lesson_edit.php`, `lesson_delete.php`)**:
+  - CRUD operations on `lessons` table.
+  - Each lesson references a subject and has a `video_url` (often a YouTube link).
+  - Lessons can optionally include embedded quick quiz fields (depending on extension).
+
+- **Quizzes and Questions (`quizzes_list.php`, `quiz_add.php`, `quiz_edit.php`, `quiz_delete.php`, `questions_manage.php`)**:
+  - Manage quizzes tied to subjects.
+  - For each quiz, manage up to 10 questions in `quiz_questions`.
+  - Admin can see a question count per quiz.
+
+- **Games Management (`games_list.php`, `game_add.php`, `game_edit.php`, `game_delete.php`)**:
+  - CRUD operations on `games` table.
+  - `notes` field typically stores the corresponding JS filename (`alphabet.js`, etc.).
+  - Admin defines `game_type`, description, and learning outcome to describe the game.
+
+- **Parents & Monitoring**:
+  - `parents_list.php` (list of parent accounts).
+  - `activity_logs.php`, `analytics.php` (overviews of system-wide activity and trends).
+
+5.3 Child Portal (`/child`)
+- **Dashboard (`dashboard.php`)**:
+  - Personalized greeting and big action buttons:
+    - Learn (lessons)
+    - Play Games
+    - Take Quiz
+    - Draw & Color
+  - Quick access subject tiles (if subjects exist).
+  - Footer progress bar showing number of quizzes completed, stars earned, and a visual progress bar.
+
+- **Lessons (`lessons.php`, `lesson_view.php`)**:
+  - `lessons.php`:
+    - View 1 (no `subject_id`): list of all subjects; clicking a subject shows lessons within that subject.
+    - View 2 (with `subject_id`): list of lessons for the selected subject, including completion status per child.
+  - `lesson_view.php`:
+    - Displays the selected lesson’s video via an embedded YouTube player.
+    - Shows lesson title and description.
+    - Optionally includes a quick inline quiz (single question) if fields present.
+    - “Mark Complete” action:
+      - Inserts a record into `lesson_progress` if not already present.
+      - Grants stars (currently 5 per lesson) by updating `children.total_stars`.
+      - Triggers badge evaluation via `checkAndUnlockBadges`.
+      - Logs the completion in `activity_logs`.
+
+- **Quizzes (`quizzes.php`, `quiz_start.php`, `quiz_attempt.php`)**:
+  - `quizzes.php`:
+    - Groups quizzes by subject.
+    - For each quiz, checks if all lessons in that subject are completed:
+      - If not, marks quiz as locked (shows lessons completed / total).
+      - If completed, quiz is unlocked with a “Start Quiz” button.
+    - Shows previous score if quiz was already taken by this child.
+  - `quiz_start.php`:
+    - Quick intro screen for the chosen quiz (title, instructions).
+    - “Let’s Go!” button directs to `quiz_attempt.php`.
+  - `quiz_attempt.php` (core quiz logic):
+    - Loads questions for the selected quiz from `quiz_questions`.
+    - Renders a question form with radio options A–D.
+    - On submit:
+      - Calculates score out of 10.
+      - Inserts a row into `quiz_results` with `is_completed = 1`.
+      - Grants stars (10 for completion + bonus 5 for perfect 10/10).
+      - Updates `children.total_stars` and triggers `checkAndUnlockBadges`.
+      - Logs quiz completion in `activity_logs`.
+      - Shows a result page with an emoji trophy/feedback, score, new badges (if any), and a detailed review of each question with correct/incorrect indication.
+
+- **Games (`games.php`, `play_game.php`, `save_game_progress.php`)**:
+  - `games.php`:
+    - Lists all games from `games` table.
+    - Displays themed thumbnails and basic description and type for each game.
+    - Clicking a game opens `play_game.php`.
+  - `play_game.php`:
+    - Loads game metadata from `games` table.
+    - Determines the JS file to load (from `games.notes` or via fallback mapping by game name).
+    - Sets up a canvas-based game UI with status bar (stars, score, level).
+    - Includes shared game engine JS and game-specific JS.
+  - `save_game_progress.php`:
+    - Receives JSON from the game JS with `game_id`, `score`, `stars`, and `level`.
+    - Updates or inserts `game_progress` row for this child/game.
+    - Accumulates score and stars across sessions, updating `level_completed` if needed.
+    - Updates `children.total_stars` and triggers badges.
+    - Logs the game activity in `activity_logs`.
+
+- **Drawing (`drawing.php`, `save_drawing.php`, `my_drawings.php`)**:
+  - `drawing.php`:
+    - Provides a drawing UI using a canvas, multiple tools (brush, pencil, eraser, shapes), colors, and brush sizes.
+    - Includes buttons to clear the canvas and save the drawing.
+  - `save_drawing.php`:
+    - Receives base64 PNG data via JSON.
+    - Decodes and saves the image as a file under `assets/drawings/`.
+    - Inserts the drawing path into `drawings` table with the child ID.
+    - Logs a drawing activity in `activity_logs`.
+  - `my_drawings.php`:
+    - Lists saved drawings for the child (gallery view).
+
+- **Progress & Achievements (`progress.php`, `achievements.php`)**:
+  - `progress.php`:
+    - Displays child profile data, stars, and level.
+    - Shows progress bars for lesson completion and quizzes (percentage based on totals in DB).
+    - Displays game session count.
+    - Provides a link to view achievements.
+  - `achievements.php`:
+    - Shows all defined achievements from `achievements` table.
+    - Highlights which ones are unlocked for the current child based on `child_achievements`.
+
+5.4 Parent Portal (`/parent`)
+- **Dashboard (`dashboard.php`)**:
+  - Allows selecting one of the parent’s children.
+  - Shows summary stats: total stars, current level, lessons completed, quizzes taken, games played.
+  - Displays most recent activities for the selected child.
+
+- **Learning Analytics (`learning_progress.php`)**:
+  - Weekly chart of lessons completed and quizzes taken over the last 7 days.
+  - Uses Chart.js to visualize trends.
+
+- **Reports**:
+  - `lesson_reports.php`: Completed lesson list with subject, title, completion date.
+  - `quiz_reports.php`: Quiz results including subject, quiz title, score, date, and performance label (Excellent/Good/Needs Practice).
+  - `game_reports.php`: Game activity with game name, type, highest level reached, total score, stars earned, last played time.
+
+- **Activity Timeline (`activity_timeline.php`)**:
+  - Chronological list of the child’s actions from `activity_logs`.
+  - Shows time, activity type (lesson, quiz, game, drawing, etc.), and details.
+
+
+6. Core Workflows (End-to-End)
+------------------------------
+6.1 New Family Onboarding
+1) Parent visits home page and clicks **Register**.
+2) Parent fills parent & child details and submits the registration form.
+3) System:
+   - Validates client-side fields (lengths, formats).
+   - Checks email uniqueness and creates `parents` and `children` rows inside a transaction.
+4) Parent is prompted to log in.
+
+6.2 Login and Role Routing
+1) User opens `login.php`.
+2) Selects role (Child, Parent, Admin) and enters credentials.
+3) System retrieves the appropriate row from `parents`, `children`, or `admins` and checks password.
+4) On success:
+   - Sets session variables.
+   - Redirects to the corresponding dashboard.
+
+6.3 Lesson Consumption and Completion
+1) Child navigates to **Lessons** from dashboard.
+2) Chooses a subject and sees the list of lessons.
+3) Opens a lesson in `lesson_view.php`.
+4) Watches the embedded video and optionally answers the inline quick quiz.
+5) Clicks **Mark Complete**.
+6) System:
+   - Inserts into `lesson_progress` if not already completed.
+   - Adds stars to `children.total_stars`.
+   - Recomputes level and checks for new achievements.
+   - Logs an activity entry.
+7) Child sees updated progress in dashboard and `progress.php`.
+
+6.4 Quiz Attempt and Scoring
+1) Child opens **Quizzes**.
+2) For each subject, locked/unlocked quizzes are shown.
+3) If unlocked, child starts a quiz via `quiz_start.php`, then `quiz_attempt.php`.
+4) Child answers all questions and submits.
+5) System:
+   - Evaluates answers and computes score.
+   - Inserts `quiz_results` row with score and completion flag.
+   - Awards stars (base + bonus) and updates `total_stars`.
+   - Runs `checkAndUnlockBadges` and logs the quiz completion.
+   - Displays score, new badges, and per-question feedback.
+
+6.5 Game Play and Progress Tracking
+1) Child opens **Games**.
+2) Selects a game; `play_game.php` loads game UI and JavaScript.
+3) While playing, game logic tracks score, stars, and level.
+4) On completion or at checkpoints, game JS posts JSON to `save_game_progress.php`.
+5) System:
+   - Inserts or updates `game_progress` with aggregated values.
+   - Adds stars to `children.total_stars`.
+   - Runs badge check and logs game play.
+6) Parent can later see this data in **Game Reports** and **Activity Timeline**.
+
+6.6 Drawing and Gallery
+1) Child opens **Drawing** and uses canvas tools to draw.
+2) When saving, the canvas is exported as base64 PNG and sent to `save_drawing.php`.
+3) System:
+   - Saves PNG file to `assets/drawings/`.
+   - Inserts path into `drawings` table.
+   - Logs a drawing activity.
+4) Child can view creations in **My Drawings** gallery.
+
+6.7 Parent Monitoring
+- Parent logs in and selects a child.
+- Uses:
+  - Dashboard for a quick overview.
+  - Learning progress chart for trends.
+  - Lesson/quiz/game reports for detailed performance.
+  - Activity timeline to see the sequence of learning actions.
+
+6.8 Admin Content Lifecycle
+- Admin logs in and uses management screens to:
+  - Add/update/delete subjects.
+  - Add/update/delete lessons and assign videos.
+  - Add quizzes and set questions/answers.
+  - Configure games and corresponding JS mapping.
+- These changes immediately affect what the child portal shows.
+
+
+7. Technical Requirements and Environment Setup
+-----------------------------------------------
+7.1 Environment
+- **OS**: Any OS capable of running XAMPP / Apache + PHP + MySQL.
+- **PHP**: Version compatible with PDO and the current code (PHP 8 recommended, based on SQL dump environment).
+- **Database**: MySQL/MariaDB.
+
+7.2 Installation Steps
+1) Place the project folder in your web server root (e.g., `htdocs/kids`).
+2) Create database:
+   - Open phpMyAdmin.
+   - Import `database.sql` or `kids_learning.sql` to create and seed the `kids_learning` database.
+3) Configure database connection:
+   - Edit `config/db.php` to match your local DB credentials (default: host `localhost`, db `kids_learning`, user `root`, password empty).
+4) File permissions:
+   - Ensure the web server can write to `assets/drawings/` (for saving drawings).
+5) Access the site:
+   - Go to `http://localhost/kids/index.php`.
+6) Default credentials (from README and SQL seed):
+   - Admin: email `admin@kids.com`, password `12345678` (per `kids_learning.sql`).
+
+
+8. Implementation Notes and Conventions
+---------------------------------------
+- **Database Access**: Always use the global `$pdo` instance from `config/db.php` and prepared statements for user input.
+- **Session Handling**: Make sure `session_start()` is called once at the top of any script that uses `$_SESSION`.
+- **Headers and Layout**: Each portal (admin, child, parent) has its own header/footer include; new pages should include these for consistent navigation and styling.
+- **Styling**: Follows a pre-built kids-focused theme. New UI should reuse existing CSS classes where possible.
+- **JavaScript**: Game-related JS lives under `child/assets/js/games`. Drawing logic is in `child/assets/js/drawing.js`.
+- **Rewards Logic**: Centralized in `child/includes/rewards_helper.php` via `checkAndUnlockBadges($child_id, $pdo)`.
+- **Activity Logs**: Insert into `activity_logs` for any meaningful child action that should appear in parent/admin views.
+
+
+9. Task Guide for New Developers
+--------------------------------
+This section outlines typical tasks and where to work in the codebase.
+
+9.1 Adding a New Subject
+- Update DB (no change needed; uses `subjects` table).
+- As Admin:
+  - Use the **Manage Subjects** screen (`admin/subjects_list.php` → `subject_add.php`).
+- Result:
+  - New subject appears automatically in child lessons and quizzes views.
+
+9.2 Adding New Lessons
+- As Admin:
+  - Use **Manage Lessons** (`admin/lessons_list.php` / `lesson_add.php`).
+  - Choose an existing subject, provide title, description, and video URL (YouTube).
+- Child Experience:
+  - Lesson appears in the subject’s lesson list in `child/lessons.php`.
+
+9.3 Adding a New Quiz and Questions
+- As Admin:
+  - Add a quiz under **Manage Quizzes** (`admin/quizzes_list.php` → `quiz_add.php`).
+  - Use **Manage Questions** (`questions_manage.php`) to add up to 10 questions.
+- Child Experience:
+  - Quiz appears under the subject in `child/quizzes.php` and is locked until all subject lessons are completed.
+
+9.4 Adding a New Game
+- As Admin:
+  - Add a new game entry using **Manage Games** (`admin/games_list.php` → `game_add.php`).
+  - Specify `game_name`, `game_type`, description, learning outcome, and set `notes` to the JS filename.
+- As Developer:
+  - Create a new JS game file in `child/assets/js/games/` (e.g., `spelling_bee.js`).
+  - Integrate with `game_engine.js` to report progress via `save_game_progress.php` (send JSON: `game_id`, `score`, `stars`, `level`).
+
+9.5 Changing Rewards or Badge Logic
+- Modify `child/includes/rewards_helper.php`:
+  - Adjust thresholds for lessons/games/quizzes/stars.
+  - Add new badge names to `$checks` and corresponding entries in `achievements` table.
+- Ensure that any place awarding stars (lessons, quizzes, games) calls `checkAndUnlockBadges` after updating `total_stars`.
+
+9.6 Improving Security (Recommended Tasks)
+- Replace plain-text password storage with `password_hash` / `password_verify` for `admins`, `parents`, and `children`.
+- Ensure all queries involving external input use prepared statements (many already do, but some count queries are inline with IDs in the SQL string).
+- Add CSRF protection for forms if needed for production deployment.
+
+9.7 Extending Analytics
+- Admin and parent use Chart.js for analytics.
+- To add new charts:
+  - Identify relevant queries (e.g., stars over time, average scores).
+  - Add new endpoints or embed data directly into the view.
+  - Initialize new Chart.js instances similar to `admin/dashboard.php` and `parent/learning_progress.php`.
+
+
+10. Summary
+-----------
+- The Kids Learning Platform is a modular, role-based PHP/MySQL application with clear separation between Admin, Parent, and Child UIs.
+- Core concepts revolve around subjects, lessons, quizzes, games, and a unified reward system (stars, levels, achievements).
+- Activity logging and reporting make the system transparent to parents and manageable for admins.
+- With the understanding of the structure and workflows described above, a new developer should be able to:
+  - Set up the environment.
+  - Add or modify content (subjects, lessons, quizzes, games).
+  - Extend rewards, analytics, and UI features.
+  - Incrementally improve security and robustness while keeping existing behavior intact.

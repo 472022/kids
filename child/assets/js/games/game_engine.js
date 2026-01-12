@@ -20,6 +20,10 @@ class GameEngine {
         this.canvas.addEventListener('mousedown', (e) => this.handleInput(e));
         this.canvas.addEventListener('touchstart', (e) => this.handleInput(e));
         
+        // Keyboard Support
+        window.addEventListener('keydown', (e) => this.handleInput(e));
+        window.addEventListener('keyup', (e) => this.handleInput(e));
+
         document.getElementById('startGameBtn').addEventListener('click', () => this.start());
     }
 
@@ -29,7 +33,7 @@ class GameEngine {
         
         const btn = document.createElement('button');
         btn.id = 'exitGameBtn';
-        btn.innerHTML = '❌ Exit Game';
+        btn.innerHTML = '❌ Stop';
         btn.style.position = 'absolute';
         btn.style.top = '10px';
         btn.style.right = '10px';

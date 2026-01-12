@@ -162,6 +162,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <?php echo $error; ?>
                                 </div>
                             <?php endif; ?>
+
+                            <div id="js-error-message" class="alert alert-danger" style="display:none; margin-top: 20px;"></div>
                             
                             <?php if($success): ?>
                                 <div class="alert alert-success" style="margin-top: 20px;">
@@ -176,7 +178,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     </div>
                                     <div class="col-lg-6">
                                         <div class="contact-field p-relative c-name mb-30">                                    
-                                            <input type="text" name="parent_name" placeholder="Parent Name" required>
+                                            <input type="text" name="parent_name" placeholder="Parent Name (Letters Only)" required pattern="[A-Za-z\s]+" title="Name should only contain letters">
                                         </div>                               
                                     </div>
                                     <div class="col-lg-6">                               
@@ -186,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     </div>
                                     <div class="col-lg-6">                               
                                         <div class="contact-field p-relative c-subject mb-30">                                   
-                                            <input type="text" name="parent_phone" placeholder="Phone Number" required>
+                                            <input type="text" name="parent_phone" placeholder="Phone Number (10 Digits)" required pattern="\d{10}" title="Phone number must be exactly 10 digits" maxlength="10">
                                         </div>
                                     </div>
                                     <div class="col-lg-6">                               
@@ -315,32 +317,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         const parentPhone = document.querySelector('input[name="parent_phone"]').value;
         const parentName = document.querySelector('input[name="parent_name"]').value;
         
+        const errorDiv = document.getElementById('js-error-message');
+        errorDiv.style.display = 'none';
+        errorDiv.innerText = '';
+        
+        let errorMessage = '';
+
         // 1. Password Validation (min 8 chars)
         if (parentPass.length < 8) {
-            e.preventDefault();
-            alert("Parent Password must be at least 8 characters long.");
-            return;
+            errorMessage = "Parent Password must be at least 8 characters long.";
         }
-        if (childPass.length < 8) {
-            e.preventDefault();
-            alert("Child Password must be at least 8 characters long.");
-            return;
+        else if (childPass.length < 8) {
+            errorMessage = "Child Password must be at least 8 characters long.";
         }
-
         // 2. Phone Validation (exactly 10 digits, numbers only)
-        const phoneRegex = /^\d{10}$/;
-        if (!phoneRegex.test(parentPhone)) {
-            e.preventDefault();
-            alert("Phone number must be exactly 10 digits (numbers only).");
-            return;
+        else if (!/^\d{10}$/.test(parentPhone)) {
+            errorMessage = "Phone number must be exactly 10 digits (numbers only).";
+        }
+        // 3. Parent Name Validation (Characters only, spaces allowed)
+        else if (!/^[A-Za-z\s]+$/.test(parentName)) {
+            errorMessage = "Parent Name must contain only characters (no numbers or special symbols).";
+        }
+        // 4. Child Name Validation
+        else if (!/^[A-Za-z\s]+$/.test(document.querySelector('input[name="child_name"]').value)) {
+            errorMessage = "Child Name must contain only characters (no numbers or special symbols).";
         }
 
-        // 3. Parent Name Validation (Characters only, spaces allowed)
-        const nameRegex = /^[A-Za-z\s]+$/;
-        if (!nameRegex.test(parentName)) {
+        if (errorMessage) {
             e.preventDefault();
-            alert("Parent Name must contain only characters (no numbers or special symbols).");
-            return;
+            errorDiv.innerText = errorMessage;
+            errorDiv.style.display = 'block';
+            // Scroll to error
+            errorDiv.scrollIntoView({behavior: 'smooth', block: 'center'});
         }
     });
 </script>

@@ -26,6 +26,7 @@ include 'includes/header.php';
                 <button class="tool-btn active" data-tool="brush" title="Brush" style="font-size: 1.5rem; padding: 10px; border: 2px solid #eee; border-radius: 10px; background: white; cursor: pointer;">🖌</button>
                 <button class="tool-btn" data-tool="pencil" title="Pencil" style="font-size: 1.5rem; padding: 10px; border: 2px solid #eee; border-radius: 10px; background: white; cursor: pointer;">✏</button>
                 <button class="tool-btn" data-tool="eraser" title="Eraser" style="font-size: 1.5rem; padding: 10px; border: 2px solid #eee; border-radius: 10px; background: white; cursor: pointer;">🧽</button>
+                <button class="tool-btn" data-tool="fill" title="Fill Color" style="font-size: 1.5rem; padding: 10px; border: 2px solid #eee; border-radius: 10px; background: white; cursor: pointer;">🪣</button>
                 <button class="tool-btn" data-tool="rect" title="Rectangle" style="font-size: 1.5rem; padding: 10px; border: 2px solid #eee; border-radius: 10px; background: white; cursor: pointer;">▭</button>
                 <button class="tool-btn" data-tool="circle" title="Circle" style="font-size: 1.5rem; padding: 10px; border: 2px solid #eee; border-radius: 10px; background: white; cursor: pointer;">◯</button>
                 <button class="tool-btn" data-tool="line" title="Line" style="font-size: 1.5rem; padding: 10px; border: 2px solid #eee; border-radius: 10px; background: white; cursor: pointer;">▱</button>
@@ -62,6 +63,7 @@ include 'includes/header.php';
 </div>
 
 <script src="assets/js/drawing.js"></script>
+<script src="assets/js/flood_fill.js"></script>
 <script>
     // Simple script to handle tool activation UI (logic is in drawing.js)
     document.querySelectorAll('.tool-btn').forEach(btn => {

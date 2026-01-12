@@ -13,7 +13,7 @@ if(isset($_SESSION['user_id'])) {
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Kidso - Kids Learning Platform</title>
+        <title>Kids- Kids Learning Platform</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
@@ -458,7 +458,7 @@ if(isset($_SESSION['user_id'])) {
                 <div class="container">
                     <div class="row align-items-center">
                         <div class="col-lg-12">                         
-                              Copyright © 2026 Kidso All rights reserved.  
+                              Copyright © 2026 kids All rights reserved.  
                         </div>
                         
                         

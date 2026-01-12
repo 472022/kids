@@ -69,10 +69,18 @@ document.addEventListener('DOMContentLoaded', () => {
         
         ctx.lineWidth = currentSize;
         ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
         ctx.strokeStyle = currentColor;
 
         if (currentTool === 'eraser') {
             ctx.strokeStyle = 'white';
+        }
+
+        // Fill Tool Logic
+        if (currentTool === 'fill') {
+            floodFill(startX, startY, currentColor);
+            isDrawing = false; // Fill is one-time action
+            return;
         }
 
         // Snapshot for shapes
@@ -80,7 +88,17 @@ document.addEventListener('DOMContentLoaded', () => {
             snapshot = ctx.getImageData(0, 0, canvas.width, canvas.height);
         } else {
             // For brush/pencil, start drawing immediately
-            ctx.lineTo(startX, startY);
+            ctx.beginPath();
+            ctx.moveTo(startX, startY);
+            
+            // Brush vs Pencil Style
+            if (currentTool === 'brush') {
+                ctx.shadowBlur = 2;
+                ctx.shadowColor = currentColor;
+            } else {
+                ctx.shadowBlur = 0;
+            }
+            ctx.lineTo(startX, startY); // Initial dot
             ctx.stroke();
         }
     };

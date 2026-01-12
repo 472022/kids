@@ -9,14 +9,21 @@ class NumberJumpGame extends GameEngine {
             vx: 0,
             vy: 0, 
             isJumping: false,
-            targetX: null, // Where we are jumping to
-            faceDirection: 1 // 1 = right, -1 = left
+            targetX: null, 
+            faceDirection: 1, // 1 = right, -1 = left
+            frame: 0
         };
         
         this.gravity = 0.6;
         this.platforms = [];
         this.particles = [];
-        this.cameraX = 0; // For scrolling
+        this.cameraX = 0; 
+        
+        // Background Layers for Parallax
+        this.bgLayers = [
+            { x: 0, speed: 0.2, color: "#81C784" }, // Far hills
+            { x: 0, speed: 0.5, color: "#4CAF50" }  // Near bushes
+        ];
         
         // Game State
         this.score = 0;
@@ -29,85 +36,70 @@ class NumberJumpGame extends GameEngine {
     }
 
     createStartPlatforms() {
-        // Start platform (safe zone)
+        // Start platform
         this.platforms.push({
-            x: 50,
-            y: 400,
-            width: 150,
-            height: 40,
-            number: null, // No number on start
-            color: '#8BC34A'
+            x: 50, y: 400, width: 150, height: 40,
+            number: null, color: '#8D6E63' // Wood log color
         });
 
         // Generate 3 numbered platforms
         for(let i=0; i<3; i++) {
-            this.addPlatform(300 + i * 250);
+            this.addPlatform(300 + i * 280);
         }
-        
-        // Ensure one matches target
         this.ensureTargetExists();
     }
 
     addPlatform(x) {
         this.platforms.push({
             x: x,
-            y: 350 + Math.random() * 100, // Varying height
-            width: 120,
-            height: 40,
+            y: 350 + Math.random() * 100,
+            width: 130,
+            height: 45,
             number: Math.floor(Math.random() * 10) + 1,
-            color: '#4CAF50'
+            color: '#8D6E63' // Wood
         });
     }
 
     ensureTargetExists() {
-        // Check if target number exists in upcoming platforms (excluding the first safe one)
         let found = false;
-        // Only check platforms ahead of player
         let upcoming = this.platforms.filter(p => p.x > this.player.x + 50 && p.number !== null);
         
-        upcoming.forEach(p => {
-            if(p.number === this.targetNumber) found = true;
-        });
+        upcoming.forEach(p => { if(p.number === this.targetNumber) found = true; });
 
         if(!found && upcoming.length > 0) {
-            // Force one to be the target
             upcoming[Math.floor(Math.random() * upcoming.length)].number = this.targetNumber;
         }
     }
 
     update() {
-        // 1. Physics (Jump Arc)
+        // 1. Physics
         if (this.player.isJumping) {
             this.player.x += this.player.vx;
             this.player.y += this.player.vy;
             this.player.vy += this.gravity;
 
-            // Check landing on target
+            // Landing Logic
             if (this.player.vy > 0 && this.player.targetPlatform) {
                 const p = this.player.targetPlatform;
-                // Simple proximity check for "landing"
-                if (Math.abs(this.player.x - (p.x + p.width/2 - 30)) < 10 && this.player.y >= p.y - 50) {
+                if (Math.abs(this.player.x - (p.x + p.width/2 - 30)) < 15 && this.player.y >= p.y - 55) {
                     this.landOn(p);
                 }
             }
         } else {
             // Idle bobbing
-            this.player.y = this.player.y + Math.sin(Date.now() * 0.005) * 0.5;
+            this.player.y = this.player.y + Math.sin(Date.now() * 0.005) * 0.3;
         }
 
-        // 2. Camera Scroll (Keep player on left side)
-        let targetCamX = this.player.x - 150;
+        // 2. Camera Scroll
+        let targetCamX = this.player.x - 200;
         if (targetCamX < 0) targetCamX = 0;
-        // Smooth follow
         this.cameraX += (targetCamX - this.cameraX) * 0.1;
 
-        // 3. Platform Management (Infinite Runner)
-        // Remove platforms too far left
+        // 3. Platform Management
         if (this.platforms[0].x + this.platforms[0].width < this.cameraX - 100) {
             this.platforms.shift();
-            // Add new one far right
             let lastX = this.platforms[this.platforms.length-1].x;
-            this.addPlatform(lastX + 250 + Math.random() * 50);
+            this.addPlatform(lastX + 280 + Math.random() * 50);
             this.ensureTargetExists();
         }
 
@@ -121,7 +113,6 @@ class NumberJumpGame extends GameEngine {
             if (p.life <= 0) this.particles.splice(i, 1);
         }
 
-        // 5. Message Timer
         if (this.messageTimer > 0) this.messageTimer--;
     }
 
@@ -129,22 +120,19 @@ class NumberJumpGame extends GameEngine {
         this.player.isJumping = false;
         this.player.vx = 0;
         this.player.vy = 0;
-        this.player.y = platform.y - 50; // Sit on top
-        this.createParticles(this.player.x + 30, this.player.y + 60, '#FFF'); // Dust
+        this.player.y = platform.y - 55;
+        this.createWaterSplash(this.player.x + 30, platform.y + 20);
 
-        // Check Logic
         if (platform.number === this.targetNumber) {
-            // Correct!
             this.addScore(10);
-            this.message = "Great Job! 🎉";
+            this.message = "Awesome! 🎉";
             this.messageTimer = 60;
-            this.targetNumber = Math.floor(Math.random() * 10) + 1; // New Target
+            this.targetNumber = Math.floor(Math.random() * 10) + 1;
             this.ensureTargetExists();
+            this.createConfetti(this.player.x, this.player.y);
         } else if (platform.number !== null) {
-            // Wrong
             this.message = "Oops! Find " + this.targetNumber;
             this.messageTimer = 60;
-            // Penalty? Maybe shake
         }
     }
 
@@ -154,65 +142,81 @@ class NumberJumpGame extends GameEngine {
         this.player.isJumping = true;
         this.player.targetPlatform = platform;
         
-        // Calculate physics to hit target
-        // Distance
         let dx = (platform.x + platform.width/2 - 30) - this.player.x;
-        let dy = (platform.y - 50) - this.player.y;
-
-        // Arbitrary flight time based on distance
-        let time = 40; 
+        let dy = (platform.y - 55) - this.player.y;
+        let time = 45; 
         
         this.player.vx = dx / time;
-        // y = vy*t + 0.5*g*t^2  => vy = (y - 0.5*g*t^2) / t
         this.player.vy = (dy - 0.5 * this.gravity * time * time) / time;
-        
-        // Face direction
         this.player.faceDirection = (dx > 0) ? 1 : -1;
     }
 
     draw() {
         this.ctx.save();
+        
+        // --- BACKGROUND ---
+        // Sky
+        let grad = this.ctx.createLinearGradient(0, 0, 0, 600);
+        grad.addColorStop(0, "#4FC3F7"); 
+        grad.addColorStop(1, "#E1F5FE");
+        this.ctx.fillStyle = grad;
+        this.ctx.fillRect(0, 0, 800, 600);
+
+        // Parallax Hills
+        this.ctx.save();
+        this.ctx.translate(-this.cameraX * 0.2, 0); // Slow scroll
+        this.ctx.fillStyle = "#AED581";
+        this.ctx.beginPath();
+        this.ctx.moveTo(0, 600);
+        for(let i=0; i<10000; i+=200) {
+            this.ctx.bezierCurveTo(i+50, 400, i+150, 400, i+200, 600);
+        }
+        this.ctx.lineTo(0, 600);
+        this.ctx.fill();
+        this.ctx.restore();
+
+        // Water
+        this.ctx.fillStyle = "rgba(41, 182, 246, 0.6)";
+        this.ctx.fillRect(0, 500, 800, 100);
+        
+        // Apply Camera
         this.ctx.translate(-this.cameraX, 0);
 
-        // 1. Draw Background (Sky & Hills)
-        // Since we translate, we need to draw background relative to camera or fixed
-        // Let's draw a fixed sky by untranslating briefly? No, let's just draw big rects
-        // Actually, simple gradient sky
-        let grad = this.ctx.createLinearGradient(0, 0, 0, 600);
-        grad.addColorStop(0, "#87CEEB"); // Sky Blue
-        grad.addColorStop(1, "#E0F7FA");
-        this.ctx.fillStyle = grad;
-        this.ctx.fillRect(this.cameraX, 0, 800, 600); // Fill visible screen
-
-        // 2. Draw Platforms (Lily Pads)
+        // --- PLATFORMS ---
         this.platforms.forEach(p => {
-            // Lily Pad Shape (Green Ellipse)
-            this.ctx.fillStyle = p.color;
+            // Log Shadow
+            this.ctx.fillStyle = "rgba(0,0,0,0.2)";
             this.ctx.beginPath();
-            this.ctx.ellipse(p.x + p.width/2, p.y + 10, p.width/2, p.height/2, 0, 0, Math.PI*2);
+            this.ctx.roundRect(p.x + 5, p.y + 5, p.width, p.height, 10);
+            this.ctx.fill();
+
+            // Log
+            this.ctx.fillStyle = "#795548";
+            this.ctx.beginPath();
+            this.ctx.roundRect(p.x, p.y, p.width, p.height, 10);
             this.ctx.fill();
             
-            // Darker green outline
-            this.ctx.strokeStyle = "#2E7D32";
-            this.ctx.lineWidth = 3;
+            // Wood Grain
+            this.ctx.strokeStyle = "#5D4037";
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.moveTo(p.x + 10, p.y + 10); this.ctx.lineTo(p.x + p.width - 10, p.y + 10);
+            this.ctx.moveTo(p.x + 20, p.y + 30); this.ctx.lineTo(p.x + p.width - 20, p.y + 30);
             this.ctx.stroke();
 
             // Number
             if (p.number !== null) {
-                this.ctx.fillStyle = "white";
-                this.ctx.font = "bold 30px 'Fredoka One', Arial";
+                this.ctx.fillStyle = "#FFF";
+                this.ctx.font = "bold 32px 'Fredoka One', Arial";
                 this.ctx.textAlign = "center";
-                this.ctx.shadowColor = "rgba(0,0,0,0.3)";
-                this.ctx.shadowBlur = 4;
-                this.ctx.fillText(p.number, p.x + p.width/2, p.y + 18);
-                this.ctx.shadowBlur = 0; // Reset
+                this.ctx.fillText(p.number, p.x + p.width/2, p.y + 34);
             }
         });
 
-        // 3. Draw Player (Frog)
+        // --- PLAYER ---
         this.drawFrog(this.player.x, this.player.y, this.player.faceDirection);
 
-        // 4. Particles
+        // --- PARTICLES ---
         this.particles.forEach(p => {
             this.ctx.fillStyle = p.color;
             this.ctx.beginPath();
@@ -222,105 +226,112 @@ class NumberJumpGame extends GameEngine {
 
         this.ctx.restore();
 
-        // 5. UI Overlay (Fixed position)
-        // Target Instruction
-        this.ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
-        this.ctx.roundRect(200, 20, 400, 60, 30);
+        // --- HUD ---
+        this.ctx.fillStyle = "#FFF";
+        this.ctx.roundRect(200, 20, 400, 70, 20);
         this.ctx.fill();
-        this.ctx.strokeStyle = "#FF9800";
+        this.ctx.strokeStyle = "#43A047";
         this.ctx.lineWidth = 4;
-        this.ctx.strokeRect(200, 20, 400, 60);
+        this.ctx.strokeRect(200, 20, 400, 70);
 
-        this.ctx.fillStyle = "#E65100";
-        this.ctx.font = "bold 30px 'Fredoka One', Arial";
+        this.ctx.fillStyle = "#2E7D32";
+        this.ctx.font = "bold 35px 'Fredoka One', Arial";
         this.ctx.textAlign = "center";
-        this.ctx.fillText("Jump on number: " + this.targetNumber, 400, 60);
+        this.ctx.fillText("Find Number: " + this.targetNumber, 400, 68);
 
-        // Message Overlay
+        // Message
         if (this.messageTimer > 0) {
             this.ctx.save();
-            this.ctx.translate(400, 300);
+            this.ctx.translate(400, 250);
             let scale = 1 + Math.sin(Date.now() * 0.01) * 0.1;
             this.ctx.scale(scale, scale);
             
-            this.ctx.fillStyle = "rgba(0,0,0,0.7)";
-            this.ctx.roundRect(-150, -40, 300, 80, 20);
-            this.ctx.fill();
-            
-            this.ctx.fillStyle = "#FFF";
-            this.ctx.font = "bold 30px 'Fredoka One', Arial";
+            this.ctx.shadowColor="black"; this.ctx.shadowBlur=10;
+            this.ctx.fillStyle = "#FFCA28";
+            this.ctx.font = "bold 50px 'Fredoka One', Arial";
             this.ctx.textAlign = "center";
-            this.ctx.fillText(this.message, 0, 10);
-            
+            this.ctx.fillText(this.message, 0, 0);
             this.ctx.restore();
         }
+        
+        this.ctx.restore();
     }
 
     drawFrog(x, y, dir) {
         const ctx = this.ctx;
         ctx.save();
-        ctx.translate(x + 30, y + 30); // Center pivot
-        ctx.scale(dir, 1); // Flip if facing left
+        ctx.translate(x + 30, y + 30);
+        ctx.scale(dir, 1);
+
+        // Shadow
+        if(!this.player.isJumping) {
+            ctx.fillStyle = "rgba(0,0,0,0.2)";
+            ctx.beginPath(); ctx.ellipse(0, 25, 20, 5, 0, 0, Math.PI*2); ctx.fill();
+        }
 
         // Body
-        ctx.fillStyle = "#66BB6A"; // Frog Green
+        ctx.fillStyle = "#66BB6A";
         ctx.beginPath();
-        ctx.arc(0, 10, 25, 0, Math.PI * 2); // Main body
+        ctx.ellipse(0, 5, 25, 20, 0, 0, Math.PI*2);
+        ctx.fill();
+
+        // Belly
+        ctx.fillStyle = "#C8E6C9";
+        ctx.beginPath();
+        ctx.ellipse(0, 8, 15, 12, 0, 0, Math.PI*2);
         ctx.fill();
 
         // Eyes
-        ctx.fillStyle = "white";
-        ctx.beginPath();
-        ctx.arc(-12, -10, 10, 0, Math.PI * 2); // Left Eye
-        ctx.arc(12, -10, 10, 0, Math.PI * 2); // Right Eye
-        ctx.fill();
+        ctx.fillStyle = "#FFF";
+        ctx.beginPath(); ctx.arc(-12, -10, 8, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(12, -10, 8, 0, Math.PI*2); ctx.fill();
         
-        // Pupils
-        ctx.fillStyle = "black";
-        ctx.beginPath();
-        ctx.arc(-12, -10, 4, 0, Math.PI * 2);
-        ctx.arc(12, -10, 4, 0, Math.PI * 2);
-        ctx.fill();
+        ctx.fillStyle = "#000";
+        ctx.beginPath(); ctx.arc(-12, -10, 3, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(12, -10, 3, 0, Math.PI*2); ctx.fill();
 
-        // Smile
-        ctx.strokeStyle = "#1B5E20";
-        ctx.lineWidth = 2;
-        ctx.beginPath();
-        ctx.arc(0, 10, 10, 0, Math.PI, false);
-        ctx.stroke();
-
-        // Legs (Simple lines)
+        // Legs
+        ctx.strokeStyle = "#43A047";
+        ctx.lineWidth = 6;
+        ctx.lineCap = "round";
         if (this.player.isJumping) {
-            // Stretched legs
-            ctx.strokeStyle = "#66BB6A";
-            ctx.lineWidth = 8;
-            ctx.lineCap = "round";
             ctx.beginPath();
-            ctx.moveTo(-15, 25); ctx.lineTo(-25, 40); // Back Leg
-            ctx.moveTo(15, 25); ctx.lineTo(25, 40); // Front Leg
+            ctx.moveTo(-15, 15); ctx.lineTo(-25, 35);
+            ctx.moveTo(15, 15); ctx.lineTo(25, 35);
             ctx.stroke();
         } else {
-            // Sitting legs
-            ctx.fillStyle = "#43A047";
             ctx.beginPath();
-            ctx.ellipse(-20, 25, 10, 5, Math.PI/4, 0, Math.PI*2);
-            ctx.ellipse(20, 25, 10, 5, -Math.PI/4, 0, Math.PI*2);
-            ctx.fill();
+            ctx.moveTo(-15, 15); ctx.lineTo(-25, 25); ctx.lineTo(-15, 25);
+            ctx.moveTo(15, 15); ctx.lineTo(25, 25); ctx.lineTo(15, 25);
+            ctx.stroke();
         }
 
         ctx.restore();
     }
 
-    createParticles(x, y, color) {
+    createWaterSplash(x, y) {
         for(let i=0; i<10; i++) {
             this.particles.push({
-                x: x,
-                y: y,
-                vx: (Math.random() - 0.5) * 5,
-                vy: (Math.random() - 0.5) * 5,
-                life: 20 + Math.random() * 10,
-                color: color,
-                size: Math.random() * 4 + 2
+                x: x, y: y,
+                vx: (Math.random() - 0.5) * 8,
+                vy: -Math.random() * 5,
+                life: 30,
+                color: "rgba(255, 255, 255, 0.8)",
+                size: Math.random() * 5
+            });
+        }
+    }
+
+    createConfetti(x, y) {
+        const colors = ['#F44336', '#2196F3', '#FFEB3B', '#4CAF50'];
+        for(let i=0; i<20; i++) {
+            this.particles.push({
+                x: x, y: y - 50,
+                vx: (Math.random() - 0.5) * 10,
+                vy: (Math.random() - 0.5) * 10,
+                life: 60,
+                color: colors[Math.floor(Math.random() * colors.length)],
+                size: Math.random() * 6 + 2
             });
         }
     }
@@ -328,24 +339,17 @@ class NumberJumpGame extends GameEngine {
     handleInput(e) {
         if(e.type === 'mousedown' || e.type === 'touchstart') {
             const pos = this.getPos(e);
-            // Adjust click pos for camera
             const worldX = pos.x + this.cameraX;
             const worldY = pos.y;
-
-            // Check if clicked a platform
             this.platforms.forEach(p => {
                 if(worldX > p.x && worldX < p.x + p.width && worldY > p.y && worldY < p.y + p.height) {
-                    // Only jump if not already jumping
-                    if(!this.player.isJumping) {
-                        this.jumpTo(p);
-                    }
+                    if(!this.player.isJumping) this.jumpTo(p);
                 }
             });
         }
     }
 }
 
-// Helper for rounded rectangles if not supported
 if (!CanvasRenderingContext2D.prototype.roundRect) {
     CanvasRenderingContext2D.prototype.roundRect = function (x, y, w, h, r) {
         if (w < 2 * r) r = w / 2;
