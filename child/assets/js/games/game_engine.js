@@ -18,7 +18,17 @@ class GameEngine {
         
         // Event Listeners
         this.canvas.addEventListener('mousedown', (e) => this.handleInput(e));
-        this.canvas.addEventListener('touchstart', (e) => this.handleInput(e));
+        
+        // Touch Support with preventDefault to stop scrolling
+        this.canvas.addEventListener('touchstart', (e) => {
+            if(e.cancelable) e.preventDefault(); 
+            this.handleInput(e);
+        }, { passive: false });
+        
+        this.canvas.addEventListener('touchmove', (e) => {
+            if(e.cancelable) e.preventDefault();
+            // Optional: Handle drag if needed globally
+        }, { passive: false });
         
         // Keyboard Support
         window.addEventListener('keydown', (e) => this.handleInput(e));

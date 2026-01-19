@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $stmt = $pdo->prepare("UPDATE games SET game_name=?, game_type=?, description=?, learning_outcome=?, notes=? WHERE game_id=?");
     $stmt->execute([$name, $type, $desc, $outcome, $notes, $id]);
-    header("Location: games_list.php");
+    header("Location: games_list.php?msg=updated");
     exit;
 }
 

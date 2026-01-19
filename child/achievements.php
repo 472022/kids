@@ -4,6 +4,11 @@ require_once 'includes/auth_check.php';
 
 $child_id = $_SESSION['user_id'];
 
+// Fetch latest stats (stars) from database
+$stmt = $pdo->prepare("SELECT total_stars FROM children WHERE child_id = ?");
+$stmt->execute([$child_id]);
+$currentStars = $stmt->fetchColumn();
+
 // Get all badges
 $allBadges = $pdo->query("SELECT * FROM achievements")->fetchAll();
 
@@ -19,7 +24,12 @@ include 'includes/header.php';
     
     <div style="text-align:center; margin-bottom:40px;">
         <h1 style="color:#FFC107; font-size:3.5rem; font-family: 'Fredoka One'; text-shadow: 2px 2px 0 #E65100;">🏆 My Trophy Room</h1>
-        <p style="font-size:1.5rem; color:#5D4037; font-weight:bold;">Collect them all!</p>
+        <p style="font-size:1.5rem; color:#5D4037; font-weight:bold;">
+            Collect them all! <br>
+            <span style="font-size:1.2rem; color:#E65100; background:#FFF3E0; padding:5px 15px; border-radius:20px; display:inline-block; margin-top:10px;">
+                ⭐ Total Stars: <?php echo $currentStars; ?>
+            </span>
+        </p>
     </div>
 
     <div style="display: flex; flex-wrap: wrap; justify-content: center; gap: 30px;">

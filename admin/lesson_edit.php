@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $stmt = $pdo->prepare("UPDATE lessons SET subject_id=?, lesson_title=?, lesson_description=?, video_url=?, quiz_question=?, option_a=?, option_b=?, option_c=?, correct_option=? WHERE lesson_id=?");
     $stmt->execute([$subject_id, $title, $desc, $video, $quiz_question, $option_a, $option_b, $option_c, $correct_option, $id]);
-    header("Location: lessons_list.php");
+    header("Location: lessons_list.php?msg=updated");
     exit;
 }
 

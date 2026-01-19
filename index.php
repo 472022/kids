@@ -276,7 +276,7 @@ if(isset($_SESSION['user_id'])) {
                                    <p>Our platform is designed to make learning a joyful experience for children. We combine education with entertainment to ensure your child stays engaged.</p>
                                   <p>With features like drawing, animated games, and progress tracking, parents can monitor their child's growth while kids have a blast!</p>
                                   <div class="slider-btn mt-15">                                          
-                                        <a href="#" class="btn">Explore More</a>					
+                                        <a href="about.php" class="btn">Explore More</a>					
                                     </div>
                             </div>
                         </div>
@@ -415,10 +415,8 @@ if(isset($_SESSION['user_id'])) {
                                 <div class="footer-link">
                                     <ul>                                        
                                         <li><a href="index.php">Home</a></li>
-                                        <li><a href="#"> About Us</a></li>
-                                        <li><a href="#">  Classes</a></li>
-                                        <li><a href="#"> Contact Us</a></li>
-                                        <li><a href="#">Blog </a></li>
+                                        <li><a href="about.php"> About Us</a></li>
+                                        <li><a href="contact.php"> Contact Us</a></li>
                                     </ul>
                                 </div>
                             </div>

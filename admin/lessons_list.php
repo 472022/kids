@@ -5,6 +5,11 @@ require_once 'includes/auth_check.php';
 $lessons = $pdo->query("SELECT l.*, s.subject_name FROM lessons l JOIN subjects s ON l.subject_id = s.subject_id ORDER BY l.created_at DESC")->fetchAll();
 
 include 'includes/header.php';
+
+// Check for update success message
+if (isset($_GET['msg']) && $_GET['msg'] == 'updated') {
+    echo "<script>alert('Your lesson has been updated successfully');</script>";
+}
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-3" style="display:flex; justify-content:space-between;">
@@ -31,7 +36,7 @@ include 'includes/header.php';
             <td><?php echo date('M d, Y', strtotime($lesson['created_at'])); ?></td>
             <td>
                 <a href="lesson_edit.php?id=<?php echo $lesson['lesson_id']; ?>" class="btn btn-warning btn-sm">Edit</a>
-                <a href="lesson_delete.php?id=<?php echo $lesson['lesson_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</a>
+                <a href="lesson_delete.php?id=<?php echo $lesson['lesson_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this lesson?');">Delete</a>
             </td>
         </tr>
         <?php endforeach; ?>

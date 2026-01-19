@@ -215,7 +215,7 @@ include 'includes/header.php';
     <div style="margin-top:20px;">
         <h2 style="color:#2C3E50;"><?php echo htmlspecialchars($game['game_name']); ?></h2>
         <p><?php echo htmlspecialchars($game['description']); ?></p>
-        <button id="startGameBtn" style="background:#2ecc71; color:white; border:none; padding:15px 40px; font-size:1.5rem; border-radius:50px; cursor:pointer; font-weight:bold; box-shadow:0 5px 0 #27ae60;">
+        <button id="startGameBtn" style="background:#2ecc71; color:white; border:none; padding:15px 40px; font-size:1.5rem; border-radius:50px; cursor:pointer; font-weight:bold; box-shadow:0 5px 0 #27ae60; margin: 10px;">
             Start Game ▶
         </button>
     </div>

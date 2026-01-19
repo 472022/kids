@@ -94,6 +94,17 @@ $subject_id = $_GET['subject_id'] ?? null;
                 position: relative;
                 overflow: hidden;
             }
+            @media (max-width: 768px) {
+                .lesson-header-banner {
+                    flex-direction: column;
+                    text-align: center;
+                    gap: 20px;
+                    padding: 20px;
+                }
+                .lesson-header-banner h2 {
+                    font-size: 1.8rem !important;
+                }
+            }
             .btn-back-pill {
                 background: rgba(255,255,255,0.2);
                 color: white;
@@ -121,7 +132,7 @@ $subject_id = $_GET['subject_id'] ?? null;
             /* Lesson Grid */
             .lesson-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
                 gap: 25px;
             }
             .lesson-card {
@@ -195,7 +206,7 @@ $subject_id = $_GET['subject_id'] ?? null;
             <p style="font-size:1.5rem; color:#5D4037; font-weight:bold;">What do you want to learn today?</p>
         </div>
         
-        <div class="subject-row" style="gap: 30px;">
+        <div class="subject-row" style="gap: 30px; display: flex; flex-wrap: wrap; justify-content: center;">
             <?php foreach($subjects as $subject): ?>
             <?php 
                 // Determine color based on subject name (simple hash or check)
@@ -231,7 +242,8 @@ $subject_id = $_GET['subject_id'] ?? null;
                 display: flex;
                 flex-direction: column;
                 align-items: center;
-                width: 280px;
+                width: 100%;
+                max-width: 280px;
                 position: relative;
                 overflow: hidden;
             }

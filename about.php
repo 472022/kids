@@ -12,7 +12,7 @@ if(isset($_SESSION['user_id'])) {
     <head>
         <meta charset="utf-8">
         <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <title>Contact Us - Kids Learning Platform</title>
+        <title>About Us - Kids Learning Platform</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
 		<link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico">
@@ -47,6 +47,7 @@ if(isset($_SESSION['user_id'])) {
                                     <nav id="mobile-menu">
                                          <ul>
                                             <li><a href="index.php">Home</a></li>
+                                            <li><a href="about.php">About Us</a></li>
                                             <li><a href="contact.php">Contact Us</a></li>                                               
                                         </ul>
                                     </nav>
@@ -91,12 +92,12 @@ if(isset($_SESSION['user_id'])) {
                         <div class="col-xl-12 col-lg-12">
                             <div class="breadcrumb-wrap text-left">
                                 <div class="breadcrumb-title">
-                                    <h2>Contact Us</h2>    
+                                    <h2>About Us</h2>    
                                     <div class="breadcrumb-wrap">
                                 <nav aria-label="breadcrumb">
                                     <ol class="breadcrumb">
                                         <li class="breadcrumb-item"><a href="index.php">Home</a></li>
-                                        <li class="breadcrumb-item active" aria-current="page">Contact Us</li>
+                                        <li class="breadcrumb-item active" aria-current="page">About Us</li>
                                     </ol>
                                 </nav>
                             </div>
@@ -108,107 +109,101 @@ if(isset($_SESSION['user_id'])) {
             </section>
             <!-- breadcrumb-area-end -->
             
-             <!-- contact-area -->
-            <section id="contact" class="contact-area after-none contact-bg pt-90 pb-30" style="background: #12275e;" >
+            <!-- about-area -->
+            <section class="about-area about-p pt-120 pb-120 p-relative" style="background: #f7f9ff;">
+                <div class="animations-03"><img src="assets/img/bg/an-img-03.png" alt="an-img-01"></div>
+                <div class="animations-04"><img src="assets/img/bg/an-img-04.png" alt="contact-bg-an-01"></div>
+                <div class="animations-05"><img src="assets/img/bg/an-img-05.png" alt="contact-bg-an-01"></div>
                 <div class="container">
-					<div class="row">
-						<div class="col-lg-12">
-                         <div class="contact-info">
-						<div class="single-cta pb-30 mb-30 wow fadeInUp animated" data-animation="fadeInDown animated" data-delay=".2s">
-                                <div class="f-cta-icon">
-                                    <i class="far fa-map"></i>
+                    <div class="row justify-content-center align-items-center">
+                         <div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="s-about-img p-relative  wow fadeInLeft  animated"   data-animation="fadeInLeft" data-delay=".4s">
+                                <img src="assets/img/features/about_img.png" alt="img">    
+                            </div>
+                        </div>
+                        
+					<div class="col-lg-6 col-md-12 col-sm-12">
+                            <div class="about-content s-about-content  wow fadeInRight  animated pl-30" data-animation="fadeInRight" data-delay=".4s">
+                                <div class="about-title second-title pb-25">  
+                                    <h5>About Us</h5>
+                                    <h2>We Are The Best Kids Learning Platform</h2>                                   
                                 </div>
-                                <h5>Office Address</h5>
-                                <p>380 St Kilda Road, Melbourne <br>
-                                    VIC 3004, Australia</p>
+                                   <p>Our mission is to provide high-quality educational content that is both fun and effective. We believe that learning should be an adventure, not a chore.</p>
+                                  <p>Founded in 2023, we have helped thousands of children improve their math, reading, and logical skills through our interactive games and lessons.</p>
+                                  
+                                  <ul class="about-list mt-30 mb-30">
+                                      <li><i class="fas fa-check"></i> Interactive Lessons</li>
+                                      <li><i class="fas fa-check"></i> Fun Educational Games</li>
+                                      <li><i class="fas fa-check"></i> Progress Tracking for Parents</li>
+                                  </ul>
                             </div>
-							 <div class="single-cta pb-30 mb-30 wow fadeInUp animated" data-animation="fadeInDown animated" data-delay=".2s">
-                                <div class="f-cta-icon">
-                                    <i class="far fa-clock"></i>
-                                </div>
-                                <h5>Working Hours</h5>
-                                <p>Monday to Friday 09:00 to 18:30 <br> 
-                                    Saturday 15:30</p>
-                            </div>
-							 <div class="single-cta pb-30 mb-30 wow fadeInUp animated" data-animation="fadeInDown animated" data-delay=".2s">
-                                <div class="f-cta-icon">
-                                    <i class="far fa-envelope-open"></i>
-                                </div>
-                                <h5>Message Us</h5>
-                                <p> <a href="#">support@example.com</a><br><a href="#">info@example.com</a></p>
-                            </div>
-                            </div>
-                            </div>
-					</div>
-                </div>
-            </section>
-            <!-- contact-area-end -->
-            
-            <!-- map-area-end -->
-            <div class="map fix" style="background: #f5f5f5;">
-                <div class="container-flud">
-                    <div class="row">
-                        <div class="col-lg-12">
-                       <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d212867.83634504632!2d-112.24455686962897!3d33.52582710700138!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x872b743829374b03%3A0xabaac255b1e43fbe!2sPlexus%20Worldwide!5e0!3m2!1sen!2sin!4v1618567685329!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
                         </div>
                     </div>
                 </div>
-            </div>
-		     <!-- map-area-end -->
+            </section>
+            <!-- about-area-end -->
             
-            <!-- contact-area -->
-            <section id="contact" class="contact-area after-none contact-bg pt-120 pb-120 p-relative fix"  style="background: #f8f9fe;">
-                 <div class="animations-12"><img src="assets/img/bg/slider_shape03.png" alt="an-img-01"></div>
-                <div class="animations-13"><img src="assets/img/bg/an-img-12.png" alt="contact-bg-an-01"></div>
-                <div class="animations-14"><img src="assets/img/bg/slider_shape02.png" alt="contact-bg-an-01"></div>
-                <div class="animations-15"><img src="assets/img/bg/an-img-13.png" alt="contact-bg-an-01"></div>
+            <!-- team-area -->
+            <section class="team-area pt-120 pb-90" style="background: #fff;">
                 <div class="container">
-					<div class="row">
-                         <div class="col-lg-6 order-1">
-                            <img src="assets/img/bg/contact-img.png" alt="img">							
+                    <div class="row justify-content-center">
+                        <div class="col-xl-7 col-lg-10">
+                            <div class="section-title text-center mb-50">
+                                <h5>Our Team</h5>
+                                <h2>Meet Our Expert Teachers</h2>
+                            </div>
                         </div>
-                        <div class="col-lg-6 order-2">
-                            <div class="contact-bg02 wow fadeInLeft  animated">
-                            <div class="section-title center-align">
-                               <h5>Contact Us</h5>
-                                <h2>
-                                  Join Our Best Fun Classes
-                                </h2>
-                            </div>
-						<form action="mail.php" method="post" id="contact-form" class="contact-form mt-35">
-							<div class="row">
-                            <div class="col-lg-12">
-                                <div class="contact-field p-relative c-name mb-30">                                    
-                                    <input type="text" id="firstn" name="firstn" placeholder="Full Name" required>
-                                </div>                               
-                            </div>
-							<div class="col-lg-12">                               
-                                <div class="contact-field p-relative c-subject mb-30">                                   
-                                    <input type="text" id="email" name="email" placeholder="Eamil Address" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6">
+                            <div class="single-team text-center mb-30">
+                                <div class="team-img">
+                                    <img src="assets/img/team/team01.png" alt="team">
                                 </div>
-                            </div>		
-                            <div class="col-lg-12">                               
-                                <div class="contact-field p-relative c-subject mb-30">                                   
-                                    <input type="text" id="phone" name="phone" placeholder="Phone No." required>
+                                <div class="team-info">
+                                    <h4>Howard Holmes</h4>
+                                    <span>Math Teacher</span>
                                 </div>
-                            </div>	
-                            <div class="col-lg-12">
-                                <div class="contact-field p-relative c-message mb-30">                                  
-                                    <textarea name="message" id="message" cols="30" rows="10" placeholder="Write comments"></textarea>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="single-team text-center mb-30">
+                                <div class="team-img">
+                                    <img src="assets/img/team/team02.png" alt="team">
                                 </div>
-                                <div class="slider-btn">                                          
-                                            <button class="btn ss-btn active" data-animation="fadeInRight" data-delay=".8s">Submint Now</button>				
-                                        </div>                             
+                                <div class="team-info">
+                                    <h4>Ella Thompson</h4>
+                                    <span>English Teacher</span>
+                                </div>
                             </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="single-team text-center mb-30">
+                                <div class="team-img">
+                                    <img src="assets/img/team/team03.png" alt="team">
+                                </div>
+                                <div class="team-info">
+                                    <h4>Vincent Cooper</h4>
+                                    <span>Science Teacher</span>
+                                </div>
                             </div>
-                            <div class="ajax-response text-center" style="margin-top: 20px; font-weight: bold; color: green;"></div>
-                    </form>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <div class="single-team text-center mb-30">
+                                <div class="team-img">
+                                    <img src="assets/img/team/team04.png" alt="team">
+                                </div>
+                                <div class="team-info">
+                                    <h4>Danielle Bryant</h4>
+                                    <span>Art Teacher</span>
+                                </div>
                             </div>
-						</div>
-					</div>
+                        </div>
+                    </div>
                 </div>
             </section>
-            <!-- contact-area-end -->
+            <!-- team-area-end -->
+
         </main>
 
        <!-- footer -->

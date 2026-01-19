@@ -89,6 +89,20 @@ include 'includes/header.php';
         position: relative;
         overflow: hidden;
     }
+    @media (max-width: 768px) {
+        .game-header-banner {
+            flex-direction: column;
+            text-align: center;
+            gap: 20px;
+            padding: 20px;
+        }
+        .header-content h1 {
+            font-size: 2rem !important;
+        }
+        .header-icon {
+            display: none; /* Hide icon on small screens to save space */
+        }
+    }
     .header-content h1 { font-family: 'Fredoka One'; font-size: 3rem; margin: 0; text-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
     .header-content p { font-size: 1.3rem; margin: 5px 0 0; opacity: 0.9; }
     .header-icon { font-size: 5rem; opacity: 0.3; transform: rotate(15deg); }
@@ -96,7 +110,7 @@ include 'includes/header.php';
     /* Grid */
     .game-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
         gap: 30px;
         padding-bottom: 20px;
     }

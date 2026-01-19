@@ -90,6 +90,10 @@ include 'includes/header.php';
     <thead>
         <tr>
             <th>Question</th>
+            <th>Option A</th>
+            <th>Option B</th>
+            <th>Option C</th>
+            <th>Option D</th>
             <th>Correct</th>
             <th>Actions</th>
         </tr>
@@ -98,8 +102,13 @@ include 'includes/header.php';
         <?php foreach($qList as $q): ?>
         <tr>
             <td><?php echo htmlspecialchars($q['question']); ?></td>
+            <td><?php echo htmlspecialchars($q['option_a']); ?></td>
+            <td><?php echo htmlspecialchars($q['option_b']); ?></td>
+            <td><?php echo htmlspecialchars($q['option_c']); ?></td>
+            <td><?php echo htmlspecialchars($q['option_d']); ?></td>
             <td><?php echo htmlspecialchars($q['correct_option']); ?></td>
             <td>
+                <a href="question_edit.php?id=<?php echo $q['question_id']; ?>&quiz_id=<?php echo $quiz_id; ?>" class="btn btn-warning btn-sm">Edit</a>
                 <a href="questions_manage.php?quiz_id=<?php echo $quiz_id; ?>&delete_id=<?php echo $q['question_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Delete this question?');">Delete</a>
             </td>
         </tr>

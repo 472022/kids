@@ -37,7 +37,7 @@ class MemoryFlipGame extends GameEngine {
     }
 
     handleInput(e) {
-        if(e.type === 'mousedown') {
+        if(e.type === 'mousedown' || e.type === 'touchstart') {
             const pos = this.getPos(e);
             if(this.flipped.length >= 2) return;
 

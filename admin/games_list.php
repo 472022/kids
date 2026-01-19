@@ -5,6 +5,11 @@ require_once 'includes/auth_check.php';
 $games = $pdo->query("SELECT * FROM games ORDER BY created_at DESC")->fetchAll();
 
 include 'includes/header.php';
+
+// Check for update success message
+if (isset($_GET['msg']) && $_GET['msg'] == 'updated') {
+    echo "<script>alert('Your game has been updated successfully');</script>";
+}
 ?>
 
 <div class="d-flex justify-content-between align-items-center mb-3" style="display:flex; justify-content:space-between;">
@@ -31,7 +36,7 @@ include 'includes/header.php';
             <td><?php echo htmlspecialchars($game['notes'] ?? ''); ?></td>
             <td>
                 <a href="game_edit.php?id=<?php echo $game['game_id']; ?>" class="btn btn-warning btn-sm">Edit</a>
-                <a href="game_delete.php?id=<?php echo $game['game_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure?');">Delete</a>
+                <a href="game_delete.php?id=<?php echo $game['game_id']; ?>" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this game?');">Delete</a>
             </td>
         </tr>
         <?php endforeach; ?>
